@@ -41,10 +41,18 @@ def main():
         
         updatable.update(dt)
         for any in asteroids:
-            if Player.collides_with(any):
+            if any.collides_with(Player):
                 log_event("player_hit")
                 print("Game over!")
                 sys.exit()
+        
+        for any in asteroids:
+            for bullet in shots:
+                if any.collides_with(bullet):
+                    log_event("asteroid_shot")
+                    any.split()
+                    bullet.kill()
+
         for sprite in drawable:
             sprite.draw(screen)
         pygame.display.flip() # refresh?

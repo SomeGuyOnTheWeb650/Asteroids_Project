@@ -9,6 +9,7 @@ class Player(circleshape.CircleShape):
         
         super().__init__(x, y, constants.PLAYER_RADIUS)
         self.rotation = 0
+        self.shot_cooldown_timer = 0
 
     
     
@@ -45,8 +46,10 @@ class Player(circleshape.CircleShape):
         if keys[pygame.K_w]:
             self.move(dt)
         if keys[pygame.K_SPACE]:
+            
             self.shoot()
-    
+
+        self.shot_cooldown_timer -= dt
     
     
     
@@ -57,6 +60,10 @@ class Player(circleshape.CircleShape):
         self.position += rotated_with_speed_vector
 
     def shoot(self):
+        if self.shot_cooldown_timer > 0:
+            return
+        self.shot_cooldown_timer = constants.PLAYER_SHOOT_COOLDOWN_SECONDS
+        
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
         nose_position = self.position + forward * self.radius
         
