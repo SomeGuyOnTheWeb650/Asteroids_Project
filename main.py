@@ -1,8 +1,13 @@
 
+import sys
 import pygame
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH
 from logger import log_state, log_event
 import player
+import asteroid
+import asteroidfield
+import shot
+
 def main():
     pygame.init()
     clock = pygame.time.Clock()
@@ -11,9 +16,16 @@ def main():
     
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
+    asteroids = pygame.sprite.Group()
+    shots = pygame.sprite.Group()
 
+
+    asteroidfield.AsteroidField.containers = (updatable)
+    asteroid.Asteroid.containers = (asteroids, updatable, drawable)
     player.Player.containers = (updatable, drawable)
-    
+    shot.Shot.containers = (shots, updatable, drawable)
+
+    AsteroidField = asteroidfield.AsteroidField()
     Player = player.Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     print(f"Starting Asteroids with pygame version: {pygame.version.ver}")
     print(f"Screen width: {SCREEN_WIDTH}") # Same as underneath
@@ -28,6 +40,11 @@ def main():
         screen.fill("black") # Screen is object type pygame.display, so display type? .fill is a method, black is an argument
         
         updatable.update(dt)
+        for any in asteroids:
+            if Player.collides_with(any):
+                log_event("player_hit")
+                print("Game over!")
+                sys.exit()
         for sprite in drawable:
             sprite.draw(screen)
         pygame.display.flip() # refresh?
