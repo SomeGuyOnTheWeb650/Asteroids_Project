@@ -17,7 +17,7 @@ _start_time = datetime.now()
 
 def log_state():
     global _frame_count, _state_log_initialized
-
+    
     # Stop logging after `_MAX_SECONDS` seconds
     if _frame_count > _FPS * _MAX_SECONDS:
         return
@@ -41,7 +41,7 @@ def log_state():
 
     screen_size = []
     game_state = {}
-
+    
     for key, value in local_vars.items():
         if "pygame" in str(type(value)) and hasattr(value, "get_size"):
             screen_size = value.get_size()
