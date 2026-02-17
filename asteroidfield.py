@@ -49,3 +49,26 @@ class AsteroidField(pygame.sprite.Sprite):
             position = edge[1](random.uniform(0, 1))
             kind = random.randint(1, ASTEROID_KINDS)
             self.spawn(ASTEROID_MIN_RADIUS * kind, position, velocity)
+
+
+class ScoreCounter(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self, self.containers)
+        pygame.font.init()
+        self.font = pygame.font.SysFont("Arial", 24)
+        self.position = pygame.Vector2(0, 0)
+        self.width = 150
+        self.height = 50
+        self.score = 0
+    def draw(self, screen):
+        background_rect = pygame.Rect(self.position.x, self.position.y, self.width, self.height)
+        pygame.draw.rect(
+            screen,
+            "purple",
+            background_rect,
+            LINE_WIDTH)
+        score_str = f"Score: {self.score}"
+        text_surface = self.font.render(score_str, True, "white")
+        text_rect = text_surface.get_rect()
+        text_rect.center = background_rect.center
+        screen.blit(text_surface, text_rect)

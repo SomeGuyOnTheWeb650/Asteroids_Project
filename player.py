@@ -10,8 +10,25 @@ class Player(circleshape.CircleShape):
         super().__init__(x, y, constants.PLAYER_RADIUS)
         self.rotation = 0
         self.shot_cooldown_timer = 0
+        self.is_respawning = False
+        self.respawn_timer = 0
+        self.lives = 3
+        self.visible = True
+        self.invincible_timer = 0
+        self.is_invincible = False
 
     
+        
+        
+    
+    def die(self):
+        self.is_respawning = True
+        self.respawn_timer = 3000
+        self.visible = False
+        
+
+
+
     
     # in the Player class
     def triangle(self):
@@ -35,6 +52,16 @@ class Player(circleshape.CircleShape):
 
 
     def update(self, dt):
+        if self.is_respawning:
+            self.respawn_timer -= dt * 1000
+            if self.respawn_timer <= 0:
+                self.respawn()
+            return
+        if self.is_invincible:
+            self.invincible_timer -= dt * 1000
+            if self.invincible_timer <= 0:
+                self.is_invincible = False
+        
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_a]:
@@ -71,3 +98,15 @@ class Player(circleshape.CircleShape):
         bullet.velocity = pygame.Vector2(0, 1)
         bullet.velocity = bullet.velocity.rotate(self.rotation)
         bullet.velocity = bullet.velocity * constants.PLAYER_SHOOT_SPEED
+
+
+    def respawn(self):
+        
+        self.is_respawning = False
+        self.visible = True
+        self.position = pygame.Vector2(constants.SCREEN_WIDTH // 2, constants.SCREEN_HEIGHT // 2)
+        self.is_invincible = True
+        self.invincible_timer = 3000
+
+
+    

@@ -8,6 +8,18 @@ import asteroid
 import asteroidfield
 import shot
 
+def clear_spawn_zone(asteroids, center, radius=100):
+        for asteroid in asteroids:
+            distance = (asteroid.position.distance_to(center))
+            if distance < radius:
+                asteroid.kill()
+
+
+
+
+
+
+
 def main():
     pygame.init()
     clock = pygame.time.Clock()
@@ -24,7 +36,12 @@ def main():
     asteroid.Asteroid.containers = (asteroids, updatable, drawable)
     player.Player.containers = (updatable, drawable)
     shot.Shot.containers = (shots, updatable, drawable)
+    asteroidfield.ScoreCounter.containers = (drawable, updatable)
 
+
+
+    
+    counter = asteroidfield.ScoreCounter()
     AsteroidField = asteroidfield.AsteroidField()
     Player = player.Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     print(f"Starting Asteroids with pygame version: {pygame.version.ver}")
@@ -40,11 +57,24 @@ def main():
         screen.fill("black") # Screen is object type pygame.display, so display type? .fill is a method, black is an argument
         
         updatable.update(dt)
+        if Player.visible == False:
+            clear_spawn_zone(asteroids, pygame.Vector2(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
         for any in asteroids:
-            if any.collides_with(Player):
-                log_event("player_hit")
-                print("Game over!")
-                sys.exit()
+            if Player.is_invincible:
+                break
+            elif any.collides_with(Player):
+                if Player.visible:
+                    log_event("player_hit")
+                    Player.die()
+                    Player.lives -= 1
+                    if Player.lives == 0: 
+                        print("Game over!")
+                        print(f"Final Score: {counter.score}")
+                        sys.exit()
+                
+                
+                
+
         
         for any in asteroids:
             for bullet in shots:
@@ -52,9 +82,17 @@ def main():
                     log_event("asteroid_shot")
                     any.split()
                     bullet.kill()
+                    counter.score += 10
 
         for sprite in drawable:
-            sprite.draw(screen)
+            if hasattr(sprite, "visible"):
+                if sprite.visible == False:
+                    continue
+                elif sprite.visible:
+                    sprite.draw(screen)
+            
+            else:
+                sprite.draw(screen)
         pygame.display.flip() # refresh?
         
         dt = clock.tick(60) / 1000
