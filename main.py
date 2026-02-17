@@ -7,6 +7,8 @@ import player
 import asteroid
 import asteroidfield
 import shot
+import random
+
 
 def clear_spawn_zone(asteroids, center, radius=100):
         for asteroid in asteroids:
@@ -83,6 +85,33 @@ def main():
                     any.split()
                     bullet.kill()
                     counter.score += 10
+
+        for a in asteroids:
+            new_asteroids = asteroids.copy()
+            new_asteroids.remove(a)
+            for new in new_asteroids:
+                
+                
+                if a.collides_with(new):
+                    
+                    if a.time_since_collision >= 1 and new.time_since_collision >= 1:
+                        
+                        direction = new.position - a.position
+                        if direction.length() > 0:
+                            direction = direction.normalize()
+
+                        speed_a = a.velocity.length()
+                        speed_new = new.velocity.length()
+
+                        a.velocity = (-direction * speed_a).rotate(random.randint(-10, 10))
+                        new.velocity = (direction * speed_new).rotate(random.randint(-10, 10))
+                        
+                        
+
+                        a.time_since_collision = 0
+                        new.time_since_collision = 0    
+                    
+
 
         for sprite in drawable:
             if hasattr(sprite, "visible"):

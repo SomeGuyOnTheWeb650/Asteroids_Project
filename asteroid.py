@@ -8,7 +8,7 @@ import random
 class Asteroid(circleshape.CircleShape):
     def __init__(self, x, y, radius):
         super().__init__(x, y, radius)
-
+        self.time_since_collision = 0
 
 
     def draw(self, screen):
@@ -22,7 +22,8 @@ class Asteroid(circleshape.CircleShape):
 
     def update(self, dt):
         self.position += self.velocity * dt
-
+        self.time_since_collision += dt
+        
 
     def split(self):
         self.kill()
