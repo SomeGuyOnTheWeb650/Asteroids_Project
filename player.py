@@ -16,6 +16,7 @@ class Player(circleshape.CircleShape):
         self.visible = True
         self.invincible_timer = 0
         self.is_invincible = False
+        self.accel = 0
 
     
         
@@ -62,6 +63,10 @@ class Player(circleshape.CircleShape):
             if self.invincible_timer <= 0:
                 self.is_invincible = False
         
+        
+        self.inertia()
+        self.accel -= dt / 3
+        
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_a]:
@@ -70,16 +75,27 @@ class Player(circleshape.CircleShape):
             self.rotate(dt)
         if keys[pygame.K_s]:
             self.move(-dt)
+            self.accel -= dt
         if keys[pygame.K_w]:
             self.move(dt)
+            self.accel += dt
         if keys[pygame.K_SPACE]:
             
             self.shoot()
 
         self.shot_cooldown_timer -= dt
+        
     
     
-    
+    def inertia(self):
+        inertia = pygame.Vector2(0, 1).rotate(self.rotation) * self.accel
+        self.position += inertia
+
+
+
+
+
+
     def move(self, dt):
         unit_vector = pygame.Vector2(0, 1)
         rotated_vector = unit_vector.rotate(self.rotation)

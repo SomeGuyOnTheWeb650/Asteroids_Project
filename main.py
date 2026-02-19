@@ -1,4 +1,4 @@
-
+#!/home/novicegentry/workspace/JAMES/asteroids_pygame_project/.venv/bin/python3
 import sys
 import pygame
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH

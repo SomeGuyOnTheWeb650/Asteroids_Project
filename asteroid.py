@@ -23,7 +23,14 @@ class Asteroid(circleshape.CircleShape):
     def update(self, dt):
         self.position += self.velocity * dt
         self.time_since_collision += dt
-        
+        if self.position.x > constants.SCREEN_WIDTH:
+            self.position.x = self.position.x - constants.SCREEN_WIDTH - (self.radius * 2)
+        if self.position.x < 0:
+            self.position.x = self.position.x + constants.SCREEN_WIDTH + (self.radius * 2)
+        if self.position.y > constants.SCREEN_WIDTH:
+            self.position.y = self.position.y - constants.SCREEN_HEIGHT - (self.radius * 2)
+        if self.position.y < 0:
+            self.position.y = self.position.y - constants.SCREEN_HEIGHT + (self.radius * 2)        
 
     def split(self):
         self.kill()
